@@ -32,6 +32,7 @@ requete = '(gasolina OR gasóleo OR combustíveis) (preço OR preços)'
 mots_cles = ["sobe", "subi", "aument", "mais caro", "encarec", "agrava", "dispara", "escassez"]   # début de mots : "aument" couvre aumenta, aumento, aumentam...
 min_articles = 2             # il faut au moins 2 nouveaux articles pour t'alerter
 fenetre = "1d"               # articles des dernières 24 h (1h, 6h, 1d, 7d...)
+exclure = ["brasil", "r$", "reais", "centavos", "petrobras", "minas", "bh", "japao", "angola", "mocambique"]   # écarte les articles hors Portugal
 tags = ["fuelpump"]
 priorite = 3
 
@@ -64,8 +65,9 @@ nom = "Économie : presse"
 actif = true
 type = "actus"
 edition = "fr"
-requete = '(krach OR récession OR "crise bancaire" OR "faillite" OR effondrement) (bourse OR économie OR banque OR marchés)'
-min_articles = 3
+requete = '(krach OR récession OR "crise bancaire" OR "crise financière" OR "faillite bancaire" OR "chute des marchés" OR dégringolade)'
+mots_cles = ["krach", "récession", "crise bancaire", "crise financière", "faillite bancaire", "chute des marchés", "dégringolade"]   # le titre doit contenir un de ces mots
+min_articles = 4
 priorite = 3
 
 
@@ -84,8 +86,9 @@ nom = "Climat : presse"
 actif = true
 type = "actus"
 edition = "fr"
-requete = '(canicule OR "vague de chaleur" OR sécheresse OR inondations OR "feux de forêt" OR "record de chaleur") (alerte OR vigilance OR record OR dévastateur)'
-min_articles = 3
+requete = '(canicule OR "vague de chaleur" OR sécheresse OR inondations OR "feux de forêt" OR "record de chaleur" OR tempête OR ouragan OR cyclone) (alerte OR vigilance OR record OR dévastateur)'
+mots_cles = ["vigilance rouge", "vigilance orange", "alerte rouge", "alerte orange", "record", "canicule", "ouragan", "cyclone", "catastroph", "dévastat"]   # événements graves seulement
+min_articles = 4
 priorite = 3
 
 [[sujets]]
@@ -94,7 +97,8 @@ actif = true
 type = "actus"
 edition = "pt"
 requete = '("onda de calor" OR incêndios OR tempestade OR inundações OR seca OR "aviso laranja" OR "aviso vermelho") Portugal'
-min_articles = 2
+mots_cles = ["aviso vermelho", "aviso laranja", "alerta vermelho", "alerta laranja", "mortos", "vítimas", "evacua", "cancela", "calamidade", "devastad"]   # événements graves seulement
+min_articles = 4
 priorite = 3
 
 
@@ -125,6 +129,7 @@ nom = "Alertes systémiques : presse"
 actif = true
 type = "actus"
 edition = "fr"
-requete = '("crise bancaire" OR "faillite bancaire" OR "panne géante" OR "panne mondiale" OR blackout OR "cyberattaque mondiale" OR "pénurie mondiale" OR pandémie OR "crise financière")'
-min_articles = 3
+requete = '("crise bancaire" OR "faillite bancaire" OR "panne géante" OR "panne mondiale" OR "panne généralisée" OR "cyberattaque mondiale" OR "pénurie mondiale" OR "pandémie mondiale" OR "crise financière")'
+mots_cles = ["crise bancaire", "faillite bancaire", "panne géante", "panne mondiale", "panne généralisée", "cyberattaque mondiale", "pénurie mondiale", "pandémie mondiale", "crise financière"]   # le titre doit contenir un de ces mots
+min_articles = 4
 priorite = 4
