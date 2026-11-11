@@ -1,0 +1,130 @@
+# =====================================================================
+#  SUJETS À SURVEILLER
+#
+#  • Désactiver un sujet : change  actif = true  en  actif = false
+#  • Ajouter un sujet    : copie un bloc [[sujets]] en entier, colle-le
+#                          à la fin et modifie-le
+#  • Une ligne qui commence par # est un commentaire (ignorée)
+#
+#  3 types de sujets :
+#    actus        = titres de presse (Google Actualités)
+#    marche       = chiffres économiques (Réserve fédérale américaine)
+#    catastrophes = séismes, cyclones, inondations... (ONU / Union européenne)
+#
+#  Trop de notifications ? Augmente min_articles ou les seuils.
+#  Pas assez ? Fais l'inverse.
+#  priorite : 1 = très discret ... 3 = normal ... 5 = urgent
+# =====================================================================
+
+[general]
+max_notifs_par_passage = 8   # au-delà, le reste est regroupé en 1 seul message
+battement_jours = 7          # message discret "veille active" tous les 7 jours (0 = jamais)
+
+
+# ───────────────────────── ESSENCE / ÉNERGIE ─────────────────────────
+
+[[sujets]]
+nom = "Essence Portugal"
+actif = true
+type = "actus"
+edition = "pt"               # presse portugaise (autres choix : fr, en, es, de)
+requete = '(gasolina OR gasóleo OR combustíveis) (preço OR preços)'
+mots_cles = ["sobe", "subi", "aument", "mais caro", "encarec", "agrava", "dispara", "escassez"]   # début de mots : "aument" couvre aumenta, aumento, aumentam...
+min_articles = 2             # il faut au moins 2 nouveaux articles pour t'alerter
+fenetre = "1d"               # articles des dernières 24 h (1h, 6h, 1d, 7d...)
+tags = ["fuelpump"]
+priorite = 3
+
+[[sujets]]
+nom = "Pétrole Brent (annonce l'essence)"
+actif = true
+type = "marche"
+serie = "DCOILBRENTEU"
+sens = "hausse"              # hausse, baisse ou les deux
+seuil_jour_pct = 4           # alerte si +4 % en 1 jour
+seuil_tendance_pct = 8       # ou +8 % sur 5 jours
+jours_tendance = 5
+priorite = 3
+
+
+# ───────────────────────── ÉCONOMIE ET MARCHÉS ─────────────────────────
+
+[[sujets]]
+nom = "Bourse américaine (S&P 500)"
+actif = true
+type = "marche"
+serie = "SP500"
+sens = "baisse"
+seuil_jour_pct = 2.5
+seuil_tendance_pct = 6
+priorite = 3
+
+[[sujets]]
+nom = "Économie : presse"
+actif = true
+type = "actus"
+edition = "fr"
+requete = '(krach OR récession OR "crise bancaire" OR "faillite" OR effondrement) (bourse OR économie OR banque OR marchés)'
+min_articles = 3
+priorite = 3
+
+
+# ───────────────────────── CLIMAT ET MÉTÉO EXTRÊME ─────────────────────────
+
+[[sujets]]
+nom = "Catastrophes naturelles (monde)"
+actif = true
+type = "catastrophes"
+niveau_min = "orange"        # orange = grave, red = très grave
+types = ["EQ", "TC", "FL", "VO", "TS", "WF"]   # séisme, cyclone, inondation, volcan, tsunami, feu (ajoute "DR" pour la sécheresse)
+priorite = 4
+
+[[sujets]]
+nom = "Climat : presse"
+actif = true
+type = "actus"
+edition = "fr"
+requete = '(canicule OR "vague de chaleur" OR sécheresse OR inondations OR "feux de forêt" OR "record de chaleur") (alerte OR vigilance OR record OR dévastateur)'
+min_articles = 3
+priorite = 3
+
+[[sujets]]
+nom = "Météo extrême Portugal"
+actif = true
+type = "actus"
+edition = "pt"
+requete = '("onda de calor" OR incêndios OR tempestade OR inundações OR seca OR "aviso laranja" OR "aviso vermelho") Portugal'
+min_articles = 2
+priorite = 3
+
+
+# ───────────────────────── ALERTES SYSTÉMIQUES ─────────────────────────
+
+[[sujets]]
+nom = "Indice de peur (VIX)"
+actif = true
+type = "marche"
+serie = "VIXCLS"
+sens = "hausse"
+seuil_jour_pct = 25          # +25 % en 1 jour
+niveau_haut = 30             # ou au-dessus de 30 (stress élevé sur les marchés)
+priorite = 4
+
+[[sujets]]
+nom = "Stress du crédit (spreads obligataires)"
+actif = true
+type = "marche"
+serie = "BAMLH0A0HYM2"
+sens = "hausse"
+seuil_tendance_pct = 20      # +20 % sur 5 jours
+niveau_haut = 5.5
+priorite = 4
+
+[[sujets]]
+nom = "Alertes systémiques : presse"
+actif = true
+type = "actus"
+edition = "fr"
+requete = '("crise bancaire" OR "faillite bancaire" OR "panne géante" OR "panne mondiale" OR blackout OR "cyberattaque mondiale" OR "pénurie mondiale" OR pandémie OR "crise financière")'
+min_articles = 3
+priorite = 4
