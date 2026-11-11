@@ -67,3 +67,362 @@ def log(texte):
 def telecharger(url, tentatives=2, delai=25):
     erreur = None
     for i in range(tentatives):
+        try:
+            requete = urllib.request.Request(
+                url, headers={"User-Agent": "Mozilla/5.0 (compatible; veille-perso/1.0)"})
+            with urllib.request.urlopen(requete, timeout=delai) as reponse:
+                return reponse.read()
+        except Exception as e:  # réseau, erreur HTTP...
+            erreur = e
+            if i + 1 < tentatives:
+                time.sleep(3)
+    raise erreur
+
+
+def notifier(topic, serveur, token, alerte):
+    corps = {
+        "topic": topic,
+        "title": alerte["titre"][:200],
+        "message": alerte["message"][:3000],
+        "priority": alerte.get("priorite", 3),
+        "tags": alerte.get("tags", []),
+    }
+    if alerte.get("lien"):
+        corps["click"] = alerte["lien"]
+    entetes = {"Content-Type": "application/json", "User-Agent": "veille-perso/1.0"}
+    if token:
+        entetes["Authorization"] = "Bearer " + token
+    donnees = json.dumps(corps).encode("utf-8")
+    erreur = None
+    for i in range(2):
+        try:
+            requete = urllib.request.Request(serveur.rstrip("/") + "/", data=donnees,
+                                             headers=entetes, method="POST")
+            with urllib.request.urlopen(requete, timeout=20) as reponse:
+                reponse.read()
+            return
+        except Exception as e:
+            erreur = e
+            time.sleep(3)
+    raise erreur
+
+
+# ───────────────────────── Outils texte / mémoire ─────────────────────────
+
+def norm(texte):
+    """Minuscules sans accents, pour comparer des mots."""
+    texte = unicodedata.normalize("NFD", texte.lower())
+    return "".join(c for c in texte if unicodedata.category(c) != "Mn")
+
+
+def contient(titre, mots):
+    t = norm(titre)
+    return any(re.search(r"\b" + re.escape(norm(m)), t) for m in mots)
+
+
+def deja_vu(vus, cle, jours):
+    quand = vus.get(cle)
+    return bool(quand) and maintenant() - datetime.fromisoformat(quand) < timedelta(days=jours)
+
+
+def charger_etat():
+    try:
+        etat = json.loads(FICHIER_ETAT.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        etat = {}
+    etat.setdefault("vus", {})
+    etat.setdefault("erreurs", {})
+    return etat
+
+
+def sauver_etat(etat):
+    limite = maintenant() - timedelta(days=CONSERVATION_JOURS)
+    for nom, cles in list(etat["vus"].items()):
+        etat["vus"][nom] = {c: t for c, t in cles.items()
+                            if datetime.fromisoformat(t) >= limite}
+    etat["dernier_passage"] = maintenant().strftime("%Y-%m-%d")  # 1 commit/jour au moins
+    FICHIER_ETAT.write_text(
+        json.dumps(etat, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
+        encoding="utf-8")
+
+
+def marquer(etat, alerte):
+    vus = etat["vus"].setdefault(alerte["sujet"], {})
+    ts = maintenant().isoformat(timespec="seconds")
+    for cle in alerte.get("cles", []):
+        vus[cle] = ts
+
+
+# ───────────────────────── Source 1 : presse (Google Actualités) ─────────────────────────
+
+def source_actus(s, vus):
+    if "requete" not in s:
+        raise ValueError("il manque la ligne 'requete'")
+    edition = s.get("edition", "fr")
+    if edition not in EDITIONS:
+        raise ValueError(f"édition inconnue '{edition}' (choix : {', '.join(EDITIONS)})")
+    langue, pays, ceid = EDITIONS[edition]
+    requete = f'{s["requete"]} when:{s.get("fenetre", "1d")}'
+    url = "https://news.google.com/rss/search?" + urllib.parse.urlencode(
+        {"q": requete, "hl": langue, "gl": pays, "ceid": ceid})
+    racine = ET.fromstring(telecharger(url))
+
+    nouveaux = []
+    for it in racine.iter("item"):
+        titre = (it.findtext("title") or "").strip()
+        lien = (it.findtext("link") or "").strip()
+        source = (it.findtext("source") or "").strip()
+        if source and titre.endswith(" - " + source):
+            titre = titre[: -len(source) - 3].strip()
+        if not titre or not lien:
+            continue
+        if s.get("mots_cles") and not contient(titre, s["mots_cles"]):
+            continue
+        if s.get("exclure") and contient(titre, s["exclure"]):
+            continue
+        identifiant = (it.findtext("guid") or lien).encode("utf-8")
+        cle = "a:" + hashlib.sha1(identifiant).hexdigest()[:16]
+        if deja_vu(vus, cle, CONSERVATION_JOURS):
+            continue
+        nouveaux.append({"cle": cle, "titre": titre, "source": source, "lien": lien})
+
+    if len(nouveaux) < s.get("min_articles", 1):
+        return []  # pas assez de recoupements : on attend le prochain passage
+    gardes = nouveaux[: s.get("max_titres", 3)]
+    lignes = [f"• {a['titre']}" + (f" ({a['source']})" if a["source"] else "") for a in gardes]
+    if len(nouveaux) > len(gardes):
+        lignes.append(f"… et {len(nouveaux) - len(gardes)} autre(s)")
+    return [{
+        "titre": f"{s['nom']} : {len(nouveaux)} article(s)",
+        "message": "\n".join(lignes),
+        "priorite": s.get("priorite", 3),
+        "tags": s.get("tags", ["newspaper"]),
+        "lien": gardes[0]["lien"],
+        "cles": [a["cle"] for a in nouveaux],
+    }]
+
+
+# ───────────────────────── Source 2 : marchés (FRED, base de la Réserve fédérale) ─────────────────────────
+
+def lire_fred(serie, jours=60):
+    debut = (maintenant() - timedelta(days=jours)).strftime("%Y-%m-%d")
+    url = "https://fred.stlouisfed.org/graph/fredgraph.csv?" + urllib.parse.urlencode(
+        {"id": serie, "cosd": debut})
+    texte = telecharger(url).decode("utf-8", "replace")
+    if "," not in texte.split("\n", 1)[0]:
+        raise ValueError("réponse inattendue de FRED")
+    points = []
+    for ligne in list(csv.reader(io.StringIO(texte)))[1:]:
+        if len(ligne) >= 2:
+            try:
+                points.append((ligne[0], float(ligne[1])))
+            except ValueError:
+                pass  # valeur manquante (jour férié)
+    return points
+
+
+def declenche(valeur, seuil, sens):
+    if sens == "hausse":
+        return valeur >= seuil
+    if sens == "baisse":
+        return valeur <= -seuil
+    return abs(valeur) >= seuil
+
+
+def source_marche(s, vus):
+    if "serie" not in s:
+        raise ValueError("il manque la ligne 'serie'")
+    points = lire_fred(s["serie"])
+    if len(points) < 2:
+        raise ValueError("pas assez de données reçues")
+    date, valeur = points[-1]
+    sens = s.get("sens", "les deux")
+    rappel = s.get("rappel_jours", 3)
+    raisons, cles = [], []
+
+    precedent = points[-2][1]
+    var_jour = (valeur / precedent - 1) * 100 if precedent else 0.0
+    if "seuil_jour_pct" in s and declenche(var_jour, s["seuil_jour_pct"], sens):
+        cle = f"jour:{date}"
+        if not deja_vu(vus, cle, CONSERVATION_JOURS):
+            raisons.append(f"{var_jour:+.1f} % en 1 jour")
+            cles.append(cle)
+
+    n = s.get("jours_tendance", 5)
+    if "seuil_tendance_pct" in s and len(points) > n and points[-1 - n][1]:
+        var_n = (valeur / points[-1 - n][1] - 1) * 100
+        if declenche(var_n, s["seuil_tendance_pct"], sens) and not deja_vu(vus, "tendance", rappel):
+            raisons.append(f"{var_n:+.1f} % sur {n} jours")
+            cles.append("tendance")
+
+    if "niveau_haut" in s and valeur >= s["niveau_haut"] and not deja_vu(vus, "niveau_haut", rappel):
+        raisons.append(f"niveau élevé ({valeur:g} ≥ {s['niveau_haut']:g})")
+        cles.append("niveau_haut")
+    if "niveau_bas" in s and valeur <= s["niveau_bas"] and not deja_vu(vus, "niveau_bas", rappel):
+        raisons.append(f"niveau bas ({valeur:g} ≤ {s['niveau_bas']:g})")
+        cles.append("niveau_bas")
+
+    if not raisons:
+        return []
+    icone = "chart_with_downwards_trend" if var_jour < 0 else "chart_with_upwards_trend"
+    return [{
+        "titre": f"{s['nom']} : {valeur:g}",
+        "message": ", ".join(raisons) + f"\nDernière donnée : {date}",
+        "priorite": s.get("priorite", 3),
+        "tags": s.get("tags", [icone]),
+        "lien": f"https://fred.stlouisfed.org/series/{s['serie']}",
+        "cles": cles,
+    }]
+
+
+# ───────────────────────── Source 3 : catastrophes naturelles (GDACS, ONU/UE) ─────────────────────────
+
+def source_catastrophes(s, vus):
+    url = s.get("url", "https://www.gdacs.org/xml/rss.xml")
+    racine = ET.fromstring(telecharger(url))
+    ns = {"g": "http://www.gdacs.org"}
+    niveau_min = s.get("niveau_min", "orange").lower()
+    if niveau_min not in NIVEAUX_GDACS:
+        raise ValueError("niveau_min doit être 'green', 'orange' ou 'red'")
+    minimum = NIVEAUX_GDACS[niveau_min]
+    types = [t.upper() for t in s.get("types", ["EQ", "TC", "FL", "VO", "TS", "WF"])]
+    limite = maintenant() - timedelta(days=s.get("fenetre_jours", 3))
+
+    trouves, cles, rouge = [], [], False
+    for it in racine.iter("item"):
+        niveau = (it.findtext("g:alertlevel", namespaces=ns) or "").strip().lower()
+        genre = (it.findtext("g:eventtype", namespaces=ns) or "").strip().upper()
+        titre = (it.findtext("title") or "").strip()
+        lien = (it.findtext("link") or "").strip()
+        if not titre or NIVEAUX_GDACS.get(niveau, -1) < minimum or genre not in types:
+            continue
+        if s.get("mots_cles") and not contient(titre, s["mots_cles"]):
+            continue
+        try:
+            if parsedate_to_datetime(it.findtext("pubDate")) < limite:
+                continue
+        except Exception:
+            pass  # date illisible : on garde l'alerte
+        cle = f"gdacs:{lien or titre}:{niveau}"  # une hausse de niveau re-déclenche
+        if deja_vu(vus, cle, CONSERVATION_JOURS):
+            continue
+        rouge = rouge or niveau == "red"
+        trouves.append((genre, titre, lien))
+        cles.append(cle)
+
+    if not trouves:
+        return []
+    gardes = trouves[: s.get("max_titres", 5)]
+    lignes = [f"• {LIBELLES_GDACS.get(g, g)} : {t}" for g, t, _ in gardes]
+    if len(trouves) > len(gardes):
+        lignes.append(f"… et {len(trouves) - len(gardes)} autre(s)")
+    return [{
+        "titre": f"{s['nom']} : {len(trouves)} alerte(s)",
+        "message": "\n".join(lignes),
+        "priorite": 5 if rouge else s.get("priorite", 4),
+        "tags": ["rotating_light"] if rouge else s.get("tags", ["warning"]),
+        "lien": gardes[0][2] or None,
+        "cles": cles,
+    }]
+
+
+SOURCES = {"actus": source_actus, "marche": source_marche, "catastrophes": source_catastrophes}
+
+
+# ───────────────────────── Programme principal ─────────────────────────
+
+def main():
+    args = sys.argv[1:]
+    essai = "--essai" in args
+    test = "--test" in args or os.environ.get("VEILLE_TEST", "").lower() == "true"
+    topic = os.environ.get("NTFY_TOPIC", "").strip()
+    token = os.environ.get("NTFY_TOKEN", "").strip()
+    if not topic and not essai:
+        sys.exit("Il manque NTFY_TOPIC (le nom de ton sujet ntfy). Voir LISEZMOI.md")
+
+    with open(FICHIER_CONFIG, "rb") as f:
+        cfg = tomllib.load(f)
+    general = cfg.get("general", {})
+    serveur = os.environ.get("NTFY_SERVER") or general.get("ntfy_serveur", "https://ntfy.sh")
+
+    def envoyer(alerte):
+        if essai:
+            log(f"[ESSAI] (priorité {alerte.get('priorite', 3)}) {alerte['titre']}\n{alerte['message']}\n")
+            return True
+        try:
+            notifier(topic, serveur, token, alerte)
+            return True
+        except Exception as e:
+            log(f"✗ Envoi impossible ({alerte['titre']}) : {e}")
+            return False
+
+    if test:
+        ok = envoyer({"titre": "✅ Test réussi",
+                      "message": "Ta veille est bien reliée à ton téléphone.",
+                      "priorite": 3, "tags": ["white_check_mark"]})
+        sys.exit(0 if ok else 1)
+
+    etat = charger_etat()
+    sujets = [s for s in cfg.get("sujets", []) if s.get("actif", True)]
+    alertes = []
+
+    for s in sujets:
+        nom = s.get("nom", "(sans nom)")
+        vus = etat["vus"].setdefault(nom, {})
+        try:
+            genre = s.get("type", "actus")
+            if genre not in SOURCES:
+                raise ValueError(f"type inconnu '{genre}' (choix : {', '.join(SOURCES)})")
+            trouvees = SOURCES[genre](s, vus)
+            etat["erreurs"][nom] = 0
+            log(f"✓ {nom} : {len(trouvees)} alerte(s)")
+            for a in trouvees:
+                a["sujet"] = nom
+                alertes.append(a)
+        except Exception as e:
+            n = etat["erreurs"].get(nom, 0) + 1
+            etat["erreurs"][nom] = n
+            log(f"✗ {nom} : {e}")
+            if n == SEUIL_PANNE:
+                alertes.append({"sujet": nom, "cles": [], "priorite": 2, "tags": ["warning"],
+                                "titre": f"⚠️ Source en panne : {nom}",
+                                "message": f"{n} échecs d'affilée. Dernière erreur : {e}"})
+
+    # Envoi : les plus importantes d'abord, le reste regroupé
+    alertes.sort(key=lambda a: -a.get("priorite", 3))
+    maximum = general.get("max_notifs_par_passage", 8)
+    echecs = 0
+    for a in alertes[:maximum]:
+        if envoyer(a):
+            marquer(etat, a)
+        else:
+            echecs += 1
+    trop = alertes[maximum:]
+    if trop:
+        groupe = {"titre": f"{len(trop)} autre(s) alerte(s)",
+                  "message": "\n".join(f"• {a['titre']}" for a in trop)[:3000],
+                  "priorite": max(a.get("priorite", 3) for a in trop), "tags": ["package"]}
+        if envoyer(groupe):
+            for a in trop:
+                marquer(etat, a)
+        else:
+            echecs += 1
+
+    # Message discret « tout va bien » de temps en temps
+    jours = general.get("battement_jours", 7)
+    if jours and not essai:
+        dernier = etat.get("dernier_battement")
+        if not dernier or maintenant() - datetime.fromisoformat(dernier) >= timedelta(days=jours):
+            noms = ", ".join(s.get("nom", "?") for s in sujets)
+            if envoyer({"titre": "👀 Veille active",
+                        "message": f"{len(sujets)} sujet(s) surveillé(s) : {noms}",
+                        "priorite": 1, "tags": ["eyes"]}):
+                etat["dernier_battement"] = maintenant().isoformat(timespec="seconds")
+
+    if not essai:
+        sauver_etat(etat)
+    sys.exit(1 if echecs else 0)
+
+
+if __name__ == "__main__":
+    main()
