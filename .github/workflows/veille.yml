@@ -1,0 +1,40 @@
+name: Veille
+
+on:
+  schedule:
+    - cron: "17 * * * *"      # toutes les heures, à la minute 17 (heure UTC)
+  workflow_dispatch:           # bouton "Run workflow" pour lancer à la main
+    inputs:
+      test:
+        description: "Envoyer seulement une notification de test"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: veille
+  cancel-in-progress: false
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lancer la veille
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          VEILLE_TEST: ${{ inputs.test }}
+        run: python3 veille.py
+
+      - name: Sauvegarder la mémoire
+        if: always()
+        run: |
+          git config user.name "veille-bot"
+          git config user.email "veille-bot@users.noreply.github.com"
+          if [ -f etat.json ]; then git add etat.json; fi
+          git diff --cached --quiet || { git commit -m "mémoire de la veille" && git pull --rebase && git push; }
