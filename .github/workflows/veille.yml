@@ -36,5 +36,5 @@ jobs:
         run: |
           git config user.name "veille-bot"
           git config user.email "veille-bot@users.noreply.github.com"
-          if [ -f etat.json ]; then git add etat.json; fi
+          for f in etat.json journal.md; do if [ -f "$f" ]; then git add "$f"; fi; done
           git diff --cached --quiet || { git commit -m "mémoire de la veille" && git pull --rebase && git push; }
