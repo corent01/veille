@@ -6,6 +6,8 @@ Surveille des sujets (presse, marchés, catastrophes naturelles) et t'envoie
 une notification sur ton téléphone avec l'appli gratuite ntfy.
 
   Réglages : sujets.toml  (activer / désactiver / ajouter des sujets)
+  Plaisirs : plaisirs.toml (blagues et anecdotes du jour, à compléter)
+  Journal  : journal.md   (liste complète des articles, créé automatiquement)
   Mémoire  : etat.json    (créé automatiquement, ne pas modifier)
   Secret   : variable NTFY_TOPIC (le nom de ton sujet ntfy)
 
@@ -36,6 +38,8 @@ except ModuleNotFoundError:
 DOSSIER = Path(__file__).resolve().parent
 FICHIER_CONFIG = DOSSIER / "sujets.toml"
 FICHIER_ETAT = DOSSIER / "etat.json"
+FICHIER_JOURNAL = DOSSIER / "journal.md"
+JOURNAL_JOURS = 3          # durée de conservation du journal
 
 SEUIL_PANNE = 6           # passages ratés d'affilée avant de te prévenir
 CONSERVATION_JOURS = 30   # durée de conservation de la mémoire
@@ -89,6 +93,9 @@ def notifier(topic, serveur, token, alerte):
     }
     if alerte.get("lien"):
         corps["click"] = alerte["lien"]
+    if alerte.get("bouton"):
+        corps["actions"] = [{"action": "view", "label": alerte["bouton"][0],
+                             "url": alerte["bouton"][1]}]
     entetes = {"Content-Type": "application/json", "User-Agent": "veille-perso/1.0"}
     if token:
         entetes["Authorization"] = "Bearer " + token
@@ -188,10 +195,10 @@ def source_actus(s, vus):
 
     if len(nouveaux) < s.get("min_articles", 1):
         return []  # pas assez de recoupements : on attend le prochain passage
-    gardes = nouveaux[: s.get("max_titres", 3)]
+    gardes = nouveaux[: s.get("max_titres", 5)]
     lignes = [f"• {a['titre']}" + (f" ({a['source']})" if a["source"] else "") for a in gardes]
     if len(nouveaux) > len(gardes):
-        lignes.append(f"… et {len(nouveaux) - len(gardes)} autre(s)")
+        lignes.append(f"… et {len(nouveaux) - len(gardes)} autre(s) : bouton « Tout voir »")
     return [{
         "titre": f"{s['nom']} : {len(nouveaux)} article(s)",
         "message": "\n".join(lignes),
@@ -199,6 +206,7 @@ def source_actus(s, vus):
         "tags": s.get("tags", ["newspaper"]),
         "lien": gardes[0]["lien"],
         "cles": [a["cle"] for a in nouveaux],
+        "articles": nouveaux,
     }]
 
 
@@ -326,7 +334,68 @@ def source_catastrophes(s, vus):
     }]
 
 
-SOURCES = {"actus": source_actus, "marche": source_marche, "catastrophes": source_catastrophes}
+# ───────────────────────── Source 4 : blague et anecdote du jour ─────────────────────────
+
+def source_du_jour(s, vus):
+    maintenant_ = maintenant()
+    if maintenant_.hour < s.get("heure_utc", 7):
+        return []  # trop tôt : on attend l'heure choisie
+    cle = "jour:" + maintenant_.strftime("%Y-%m-%d")
+    if deja_vu(vus, cle, 2):
+        return []  # déjà envoyé aujourd'hui
+    with open(DOSSIER / s.get("fichier", "plaisirs.toml"), "rb") as f:
+        contenu = tomllib.load(f)
+    blagues, faits = contenu.get("blagues", []), contenu.get("faits", [])
+    if not blagues and not faits:
+        raise ValueError("plaisirs.toml ne contient ni blagues ni faits")
+    n = maintenant_.toordinal()  # un nouveau numéro chaque jour
+    lignes = []
+    if blagues:
+        lignes.append("😄 " + blagues[n % len(blagues)])
+    if faits:
+        lignes.append("🤔 Le saviez-vous ? " + faits[n % len(faits)])
+    return [{
+        "titre": "☀️ Ta dose de bonne humeur",
+        "message": "\n\n".join(lignes),
+        "priorite": s.get("priorite", 3),
+        "tags": s.get("tags", ["sunny"]),
+        "cles": [cle],
+    }]
+
+
+SOURCES = {"actus": source_actus, "marche": source_marche,
+           "catastrophes": source_catastrophes, "du_jour": source_du_jour}
+
+
+# ───────────────────────── Journal des articles ─────────────────────────
+
+def ecrire_journal(entrees):
+    """Ajoute en tête de journal.md les listes complètes d'articles (3 jours conservés)."""
+    if not entrees:
+        return
+    ts = maintenant()
+    nouveaux = []
+    for nom, articles in entrees:
+        lignes = [f"## {ts:%Y-%m-%d %H:%M} UTC · {nom} ({len(articles)})", ""]
+        for a in articles:
+            titre = a["titre"].replace("[", "(").replace("]", ")")
+            source = f" ({a['source']})" if a["source"] else ""
+            lignes.append(f"- [{titre}]({a['lien']}){source}")
+        nouveaux.append("\n".join(lignes))
+    try:
+        ancien = FICHIER_JOURNAL.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        ancien = ""
+    limite = ts - timedelta(days=JOURNAL_JOURS)
+    gardes = []
+    for bloc in re.split(r"\n(?=## )", ancien):
+        m = re.match(r"## (\d{4}-\d{2}-\d{2} \d{2}:\d{2}) UTC", bloc)
+        if m and datetime.strptime(m.group(1), "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc) >= limite:
+            gardes.append(bloc.strip())
+    entete = ("# Journal de la veille\n\nListes complètes des articles, du plus récent "
+              "au plus ancien (3 derniers jours).\n")
+    FICHIER_JOURNAL.write_text(entete + "\n" + "\n\n".join(nouveaux + gardes) + "\n",
+                               encoding="utf-8")
 
 
 # ───────────────────────── Programme principal ─────────────────────────
@@ -362,6 +431,9 @@ def main():
                       "priorite": 3, "tags": ["white_check_mark"]})
         sys.exit(0 if ok else 1)
 
+    depot = os.environ.get("GITHUB_REPOSITORY", "")
+    lien_journal = f"https://github.com/{depot}/blob/main/journal.md" if depot else None
+    journal = []
     etat = charger_etat()
     sujets = [s for s in cfg.get("sujets", []) if s.get("actif", True)]
     alertes = []
@@ -378,6 +450,8 @@ def main():
             log(f"✓ {nom} : {len(trouvees)} alerte(s)")
             for a in trouvees:
                 a["sujet"] = nom
+                if a.get("articles") and lien_journal:
+                    a["bouton"] = ("Tout voir", lien_journal)
                 alertes.append(a)
         except Exception as e:
             n = etat["erreurs"].get(nom, 0) + 1
@@ -395,6 +469,8 @@ def main():
     for a in alertes[:maximum]:
         if envoyer(a):
             marquer(etat, a)
+            if a.get("articles"):
+                journal.append((a["sujet"], a["articles"]))
         else:
             echecs += 1
     trop = alertes[maximum:]
@@ -402,9 +478,13 @@ def main():
         groupe = {"titre": f"{len(trop)} autre(s) alerte(s)",
                   "message": "\n".join(f"• {a['titre']}" for a in trop)[:3000],
                   "priorite": max(a.get("priorite", 3) for a in trop), "tags": ["package"]}
+        if lien_journal and any(a.get("articles") for a in trop):
+            groupe["bouton"] = ("Tout voir", lien_journal)
         if envoyer(groupe):
             for a in trop:
                 marquer(etat, a)
+                if a.get("articles"):
+                    journal.append((a["sujet"], a["articles"]))
         else:
             echecs += 1
 
@@ -420,6 +500,7 @@ def main():
                 etat["dernier_battement"] = maintenant().isoformat(timespec="seconds")
 
     if not essai:
+        ecrire_journal(journal)
         sauver_etat(etat)
     sys.exit(1 if echecs else 0)
 
