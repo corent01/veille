@@ -6,10 +6,11 @@
 #                          à la fin et modifie-le
 #  • Une ligne qui commence par # est un commentaire (ignorée)
 #
-#  3 types de sujets :
+#  4 types de sujets :
 #    actus        = titres de presse (Google Actualités)
 #    marche       = chiffres économiques (Réserve fédérale américaine)
 #    catastrophes = séismes, cyclones, inondations... (ONU / Union européenne)
+#    du_jour      = une blague + une anecdote par jour (fichier plaisirs.toml)
 #
 #  Trop de notifications ? Augmente min_articles ou les seuils.
 #  Pas assez ? Fais l'inverse.
@@ -19,6 +20,16 @@
 [general]
 max_notifs_par_passage = 8   # au-delà, le reste est regroupé en 1 seul message
 battement_jours = 7          # message discret "veille active" tous les 7 jours (0 = jamais)
+
+
+# ───────────────────────── UN PEU DE LÉGÈRETÉ ─────────────────────────
+
+[[sujets]]
+nom = "Blague et anecdote du jour"
+actif = true
+type = "du_jour"
+heure_utc = 7                # envoyé une fois par jour, à partir de 7 h UTC (8 h à Paris, 7 h à Lisbonne en hiver)
+priorite = 3
 
 
 # ───────────────────────── ESSENCE / ÉNERGIE ─────────────────────────
