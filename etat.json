@@ -1,17 +1,17 @@
 {
  "dernier_battement": "2026-11-11T12:44:59+00:00",
- "dernier_passage": "2026-11-14",
+ "dernier_passage": "2026-11-15",
  "erreurs": {
   "Alertes systémiques : presse": 0,
   "Blague et anecdote du jour": 0,
-  "Bourse américaine (S&P 500)": 1,
+  "Bourse américaine (S&P 500)": 0,
   "Catastrophes naturelles (monde)": 0,
   "Climat : presse": 0,
   "Essence Portugal": 0,
-  "Indice de peur (VIX)": 1,
+  "Indice de peur (VIX)": 0,
   "Météo extrême Portugal": 0,
-  "Pétrole Brent (annonce l'essence)": 1,
-  "Stress du crédit (spreads obligataires)": 1,
+  "Pétrole Brent (annonce l'essence)": 0,
+  "Stress du crédit (spreads obligataires)": 0,
   "Économie : presse": 0
  },
  "vus": {
