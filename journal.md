@@ -2,6 +2,14 @@
 
 Listes complètes des articles, du plus récent au plus ancien (3 derniers jours).
 
+## 2026-11-15 17:48 UTC · Économie : presse (5)
+
+- [Krach du Litecoin : le cours tombe à 42,63 dollars, au plus bas depuis juillet](https://news.google.com/rss/articles/CBMijwFBVV95cUxOR0FlTEpPR09yaFloTnh2YXo1ZzhMeV9obDVfWmJLaVAycTZtV2dKYmdZcHJkQXVtUHYzV3pvSS11RmdZSHF6TXc4Ml8yaElHdkJVNU1uSXRRbUFjNUpha084VkxOamYxdVNfNkZHc3RBdk41a1dsMTM2cDFDcXJFU01zN3dYbEhiRGE3aDdCdw?oc=5) (CryptoTicker.io)
+- [Krach du Monero : le cours XMR au plus bas depuis août](https://news.google.com/rss/articles/CBMiigFBVV95cUxOWjM0dURKbzhveGdZX01OS2NwY2V5VHNrX3gzclphLUMtMEZVNG9rcGdQbzFkb0VKMGxIT0M1VURSNFRPTUZkUklLLXpPZ0hjTUNZMUc4UDRrNWRuSnhyOHU5MmZSZ3g0ZC03WmNwV1c2clU5MXRKWGs1NkVXajBKXzFGTDZqXzFuS3c?oc=5) (CryptoTicker.io)
+- [Krach d’Uniswap : l’UNI clôture sous 5 dollars et perd la moitié de son sommet de septembre](https://news.google.com/rss/articles/CBMijwFBVV95cUxPdEg1eGZORDdMaFFZS1ZxZXVEQlkxTmtTR2NjaWJVWnVEV0N2RG9ObWlpWElyVDZDZUF3c3JWSXpJZmp0aHQ4Wi0yR21VWGdmOFBtaXJreVc3VjdQVXpRcjhDNU5jZ3NtdVplUGFTQmk0ZDVfMThhdF8wNVRLVUJnWklKeVdtYk14dzFOVVpjTQ?oc=5) (CryptoTicker.io)
+- [Prévision du krach crypto : où 3 grandes cryptos toucheront-elles le fond ?](https://news.google.com/rss/articles/CBMiigFBVV95cUxQNnVMY1NJeTZxRy1JWWxyd0xGREFoSkR1Vm85RERJTFJkSmVyYU9CN2FOQjFvMTcxeEtjYXB6Q1BqX3JqZW9obHI4cXpuYnQyNTEyYTFsdU5QTldzZlBqeVlZczhzOTFpLUxmbnExSWNKdlRMS3VBMkZtTEdpNHJMMlBtY0tUQzFPVXc?oc=5) (CryptoTicker.io)
+- [Krach crypto du week-end : effet de levier et crédits crypto avec le bitcoin sous 66 000 dollars](https://news.google.com/rss/articles/CBMiekFVX3lxTFAtdGtkWXBUZGlTU3NMV1duanZybEg4bUt3RU05dkhwekZGenlKMENYc0ZLMTEzQ2x6OFdaSEp3ZktBTXQxS0JqZWJ0WjBmZmpIMWR1SXVhby0xSXF2RHItSXZ4TGJnME5nSllxNVVtZmkyWkZiekdEQ19R?oc=5) (CryptoTicker.io)
+
 ## 2026-11-15 11:09 UTC · Alertes systémiques : presse (5)
 
 - [Crise financière : «La France ne va pas être la Grèce», répond Clément Beaune à Nicolas Sarkozy](https://news.google.com/rss/articles/CBMikwFBVV95cUxNT3NFcEo0SWVoY1Nyd3k4UzdNOUlwc2RsNkNqSGM2S3ktNVBJY3NxQnJGQTNiTzY2UVlvQTBEcFRERmxWVVZPNmpIQWpHaGVtRXRYejlIb2huWXFfcHNXM3pQaUxIaHNtc1J4eUN5eTJJUmVtZ3IwUFhrSEg3QkxPSGh6Y2FLZVh1ODRmZ2NfZ2YyaUE?oc=5) (Yahoo Finance France)
