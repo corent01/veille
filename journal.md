@@ -2,6 +2,19 @@
 
 Listes complètes des articles, du plus récent au plus ancien (3 derniers jours).
 
+## 2026-11-18 04:34 UTC · Alertes systémiques : presse (4)
+
+- [Panne mondiale chez Apple : iCloud, App Store et Apple Pay déraillent… on fait le point](https://news.google.com/rss/articles/CBMi3gFBVV95cUxQa3VRMUtRdDJJZU80NFN0elNrRWYteEE0NlpnUXphQ2doeDJ2aXB2amFsLWx3cWJZbURxYUV2S01HcHFWWi1EQmNUdXBYZ2VSZDJ5S0psLWJRNUxybm1CNU1lYUdVQW5oRkM0VkpmNDhRWDliNmFZelhJcDBtdVoyZkF5VFFtbmRKQ1JZcTJGMlhlMTNIZ0pYOEQ3M0ExU1EtNmJRVXA1SDUzRXVTdlZtX05LSXdGVTljdFJsbzA5UXNubjg2U0FJMkNsaXd2NWNYTUJHc2liZ0ZmaUpreGc?oc=5) (Les Numériques)
+- [Panne mondiale chez Apple : une mise à jour interne paralyse iCloud, l’App Store et les boutiques](https://news.google.com/rss/articles/CBMi7wFBVV95cUxPaWQ5dkwzZUtzVVZMeXQtVXExWmM5ckdQNXdRRjJIbEJmSmQ0STN1UW9ZdlowS05pc0dUNklUWWF6TmNlVVgtQmZoaXlDUlhGNWNQQ2pjUk9WbWcybjdIajZ4LTNOUVBxU2R5X0JuNGVJUXBkRHpzbm83NTVnU3V5cWZwd1hWQTAwdksyaExmTnBSTzZ3UmNZUWpCRlFqcmpuMHN0VU85U3J4V0YzZkdYdEpjSUduZ0ZCdndIYW85VV9oVWZwSTVxVHdfWXNubzVMdlZsdUlPSHVGRExiT1VNSlp0WnpMNWhneW1idUh3RQ?oc=5) (maville.com)
+- [Microsoft Outlook : après la panne géante, les abonnés ont jusqu'au 31 décembre pour réclamer une compensation](https://news.google.com/rss/articles/CBMi8AFBVV95cUxQQkd4SVRxeUdjbmtIRGxZWnB3Z1ZyOWNxamRBckxpQnM4T0l0OThIUVFpaThSZGdjWDVISms2bGNTMHcxM1h5SFEzdUxabXFONngxcWdBeVFuU1IzclpQZUp5cjdFV0VpdlM0NkFmSjJSelFMc3BKeWVqTGZVZ3I4SmtsNEtoYVpobEMyb3dqVDRmekRQR2dod3ViX2hRbHBPeHpIQklJbG1PeURFWVJzNHVMOVo5aEdGVkZWVGJ6NkVqX1NXXzN0NVJHQS1LMG9jVXpUaWhNUlN3UXd3Vkt4WjVuZDFNYkxHWEU5TXBEVlU?oc=5) (La Crème Du Gaming)
+- [La panne mondiale de Microsoft perturbe entreprises et services...](https://news.google.com/rss/articles/CBMirgFBVV95cUxNNDF5QXMxQUZJSWJJRjU3Rk5URVg3V2NQZTh2ZmY2anpTR2paQkRwcHViZTZ4TXpDUlNGcHdTZ3ktN0cxb3NEczZzTTNtcXJaTktOcWZVM2d6TERCS0N5T1FGUmpWYmpEakh0NjY3WkhLekNuc0lhV2RYS2tvNnNmbFpILVU5VnItVExfZlhiaWFfbF9VTVV4aVdGSkNBblVFRHVSMG53V1VJcEpDdmfSAbMBQVVfeXFMUG9XbUlLc0lXbTFOcmNaOU5PNFJjUU9FbmhSTkc2T2p2YlZaaEgyXzFvaVVSWm5VTEVMMjB0Qko1UGFRLU5xZnQ0cDBXYTBLendISlhud0FuTmJZODJyTlNjUHhSd080ZVl1dFpVbV9DM1d4a0hzczFMSzNMWUZuM3VWeHZsckJUbFVkbHhBaWhMSDRfaGNnZU9FdkNQWVMxVjE4VzRZVkVKVm5LNGxXTFM0NlU?oc=5) (Fortuneo)
+
+## 2026-11-18 04:34 UTC · Essence Portugal (3)
+
+- [Preços dos combustíveis hoje (18 de novembro): Os preços mundiais do petróleo sobem ligeiramente.](https://news.google.com/rss/articles/CBMihAFBVV95cUxPbE5Vcm1Rb21rTDNydjNSbEVKalBoem1KSzlXUXBGNlFWLThCa3R5U0FmYVFwTTdXWmpJbkdtY1VCYXhScnMwYjU0RHYtblBTWVJyRk5BQmJod2RJNnJuTUJUbGQ4WTI4b1FOdTRmaWFBNG12RS05S0VDY1psQzI1TzRQWjI?oc=5) (Vietnam.vn)
+- [Etanol sobe 2,8%, gasolina fica estável e diesel cai 0,6% na 1ª quinzena do mês, diz pesquisa](https://news.google.com/rss/articles/CBMi0AFBVV95cUxNcVJPbjdUZWZxRE5oOU80SEpZU1ZwRmgxRjgyem9pczhnZ19Vc21zNHVNU2ltNTd2M25TUE9KWXlmZnJ1VE9pVm1hbXlZNk9xak1rUlc1UG5jMmV4cFVJZmd0U0o0VTNfa3daV0ZsaEc5WGc5Qm5UNVNwd01QcHpLVGt6dTQxOVN2TDJLM2tjQ3IwN1ZMckh3UlI5bUxtaFhGcVJvRzFQR3dQUXNtbGFQeTZNNV93S0NUWjVPdzVHNHB4T05PQkU0Tjk3bm5acnh2?oc=5) (Agência eixos)
+- [Fim de subsídio ao diesel importado eleva custo e preço deve subir nas bombas](https://news.google.com/rss/articles/CBMisAFBVV95cUxPZVRURG9ET0FXME85eDR4R1JHaFM5N1lONjdCSTVTc0I3SERpMjZMOVl2UUdRYnZWYzJnVkJjRDFfOWRvcy1oS0lCRloxZzY3NXdQVVV0TmNpOVByM2hSVE1xUmZhUi1KeGI5MHRnUWRtOG12Ry1hZWVaY1I4SjlxcXZLMndpa2tPNWU5MmZLaVhZVmgyaU9qN3YybnFmU0Q2OEIwdGNYR1hhSDk2TFBHZA?oc=5) (Santa Portal)
+
 ## 2026-11-17 23:01 UTC · Alertes systémiques : presse (8)
 
 - [Outlook : après la panne géante, Microsoft avance de premières explications](https://news.google.com/rss/articles/CBMi2gFBVV95cUxNRVY2a1NCcXYyS3NiLUZ4cEFJaDRqNm9RMlYzOVFvUy10RHpTODByMmRKTjhRbVBzcTg4Nk5maFlpLXZIOVVhb0hicGgtNmRGMTN2a2NXQTJpSVZJeFhZS1l3REhVX01ZQi1ZeVhydXpSdGk2LVljMmRKSW13TXdYQkhtYmdUWjFlWjduMnVxOGtrYUkwQ3JkVDAxMnR3c1FPNDVJSGVEdGlHMVd0alVzT2Y2R1k2LS03Rm9QMUFKc3Q3b19kRWRtVC01eGNOYW1tOEFralR4ZWZ6QQ?oc=5) (Le Monde.fr)
