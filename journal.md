@@ -2,6 +2,13 @@
 
 Listes complètes des articles, du plus récent au plus ancien (3 derniers jours).
 
+## 2026-11-20 03:36 UTC · Économie : presse (4)
+
+- [Taïwan s'apprête à adopter de nouvelles mesures de restriction des ventes à découvert en réponse à la chute des marchés](https://news.google.com/rss/articles/CBMid0FVX3lxTFB1MUdOdzJweWcza05McFRSYTdTaDNFQnpvZFBFaHk5TndoT1NpWElCZTFRYVlTUzJ6eXlidEtwUzdiTkdpcWJnM0JrNEsyV2VsbHZqNWRSdEM0WkZtbmVlLXd2a2lDOF9mcWl1WFgyblY5NXVJaHJB?oc=5) (TradingView)
+- [Classement FIFA : la dégringolade tunisienne se poursuit](https://news.google.com/rss/articles/CBMikAFBVV95cUxQckZvT1BLeEMxQXVEa01UNnlZdDFnajFSb0JiR3Z5OEF4ZzZGbjZpMU9ReEVrZmtzT3FQUjBHV1ZoOVBYbWxSM3dPMXFZV0h4cE8wdklDSHBYV1NiSmdyampvMGRmSndPTE00Qzk5MVZ4aUgxSGI5Wm1tcHgybXlGbmNvd1VOR05qaVVURXF5VHTSAZYBQVVfeXFMTlJFNlpUUHpkeGJENU0tbUtENFlDaU5YZGtIb25qb20tdXd3YUJreW9CWXREUklXaHRSMlliV2lnc2Q5TUl0ZWs0TkxReGxMWE1fNUtjdzFoWHBEYlNkR213UkRWVjVFQkZUT0NDbmVyVEtqWHljRGVOcWFWSk5LQ2taTlhaZndqdmpESll5OFVPN0l2NWlR?oc=5) (Le Temps News)
+- [Crise bancaire au Paraguay : un milliard de dollars perdus au pire (chef de la Banque centrale à l'AFP)](https://news.google.com/rss/articles/CBMiwwFBVV95cUxPUndXdVVYa2dWSDlLd21TSlBNeERVck9VZ3YtQ203ZHkwYmd0MFN3cTR0cVpBR08zdDJpanNfM0J3b2JqLVhxaUdtek1kdDdtMGdqN0lNQlpadnFwajduMW9ralpFZGc5WFZfQ1FfLVI1aDF6LWVfN3hrbmJodmVpMkE3cWNwb3hmLTNXeVl5OHN0TVJlU2ZDNXBTM2ZKY1p3YjhpeEtjLW1zdFNUY1RmNkltQWRJMXlKa0gzOUJZck5IM00?oc=5) (Ouragan.cd)
+- [« 3,6 millions d’euros d’effort » : à Rouen, un débat budgétaire sur fond de récession et de crise sociale](https://news.google.com/rss/articles/CBMixAFBVV95cUxOY0NUV1doZ1QyQ2lJdUxmSlBjLWJnRE84ckpldkZmUEtfSjRTcnpQLXZ6b2FReGZlajYzUXJkZ2xyRWtSWkpjX3FpTmIwS1lpTFZZM3g0azVLeUZTTEV2NG5FeEpJOW5YWTZhQTNoRlVJZFYwd2NmT29jOU9HNFZjUERoa1hkaVVWWWdqZ3BzYlRVUy1wTUVFSjRRMlJXbk1ZUmpQWmozMEUzRjBMeTlUUHg0X2d3bnlaUmQyUVE0RzdqbGJf?oc=5) (Paris Normandie)
+
 ## 2026-11-19 22:18 UTC · Essence Portugal (4)
 
 - [Apicultores reclamam apoios para fazer face ao aumento do preço dos combustíveis](https://news.google.com/rss/articles/CBMiqwFBVV95cUxQTUgwa3l1ek52Q1BCaXJpaUp2TjhhTU9GZkNNRGY3LWFCbVQtemxIYkRxYzkwbXl0VTIzR3NvMFQ0STBTNFI1NG9wNGJKV3pJd3ppQk1JbklwRTczWWltNTJpODhEeTVidHp0aXQzWTVSZTRHZy03WGhGTTdLdnZQS1pKRml1bnBUX0dxeUstVXNmWkJaaUV0STA4clJBNjJVZk5abUh4bWpJQXc?oc=5) (| Mensageiro de Bragança)
